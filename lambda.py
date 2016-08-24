@@ -116,7 +116,7 @@ def handle_session_end_request():
         card_title, speech_output, None, should_end_session))
 
 def fetch_vms_count_from_lab(intent, session):
-    return "two"
+    return "two vms"
 
 def output_vms_count(intent, session):
     """ Fetches the total count of vms in a vSphere environment"""
