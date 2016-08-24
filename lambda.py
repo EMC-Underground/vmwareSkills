@@ -116,7 +116,7 @@ def handle_session_end_request():
         card_title, speech_output, None, should_end_session))
 
 def fetch_vms_count_from_lab(intent, session):
-    return "one"
+    return "two"
 
 def output_vms_count(intent, session):
     """ Fetches the total count of vms in a vSphere environment"""
@@ -124,8 +124,8 @@ def output_vms_count(intent, session):
     reprompt_text = None
 
     favorite_color = fetch_vms_count_from_lab(intent, session)
-    speech_output = "There are" + favorite_color + \
-                    "in the lab. Goodbye."
+    speech_output = "There are " + favorite_color + \
+                    " in the lab. Goodbye."
     should_end_session = True
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
