@@ -122,7 +122,7 @@ def fetch_vms_count_from_lab(intent, session):
     sqs = boto3.resource('sqs')
     # Get the queue. This returns an SQS.Queue instance
     queue = sqs.get_queue_by_name(QueueName='lab_comm')
-    payload = {"Amount":"Everything"}
+    payload = "{'Amount':'Everything'}"
     # Create a new message
     response = queue.send_message(MessageBody=payload, MessageAttributes={"AmazonIntent":{"StringValue":intent['name'],'DataType': 'String'}})
     return "two vms"
