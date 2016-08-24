@@ -66,7 +66,7 @@ def on_intent(intent_request, session):
 
     # Dispatch to your skill's intent handlers
     if intent_name == "AllVMsCount":
-        return set_color_in_session(intent, session)
+        return output_vms_count(intent, session)
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
@@ -114,6 +114,25 @@ def handle_session_end_request():
     should_end_session = True
     return build_response({}, build_speechlet_response(
         card_title, speech_output, None, should_end_session))
+
+def fetch_vms_count_from_lab(intent, session):
+    return "one"
+
+def output_vms_count(intent, session):
+    """ Fetches the total count of vms in a vSphere environment"""
+    session_attributes = {}
+    reprompt_text = None
+
+    favorite_color = fetch_vms_count_from_lab(intent, session)
+    speech_output = "There are" + favorite_color + \
+                    "in the lab. Goodbye."
+    should_end_session = True
+
+    # Setting reprompt_text to None signifies that we do not want to reprompt
+    # the user. If the user does not respond or says something that is not
+    # understood, the session will end.
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
 
 
 def set_color_in_session(intent, session):
