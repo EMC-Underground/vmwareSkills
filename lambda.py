@@ -8,6 +8,7 @@ http://amzn.to/1LGWsLG
 """
 
 from __future__ import print_function
+import boto3
 
 def lambda_handler(event, context):
     """ Route the incoming request based on type (LaunchRequest, IntentRequest,
@@ -116,6 +117,14 @@ def handle_session_end_request():
         card_title, speech_output, None, should_end_session))
 
 def fetch_vms_count_from_lab(intent, session):
+
+    #get the service resource
+    sqs = boto3.resource('sqs')
+    # Get the queue. This returns an SQS.Queue instance
+    queue = sqs.get_queue_by_name(QueueName='lab_comm')
+    payload = {"Amount":"Everything"}
+    # Create a new message
+    response = queue.send_message(MessageBody=payload, MessageAttributes={"AmazonIntent":{"StringValue":intent['name'],'DataType': 'String'}})
     return "two vms"
 
 def output_vms_count(intent, session):
@@ -123,9 +132,8 @@ def output_vms_count(intent, session):
     session_attributes = {}
     reprompt_text = None
 
-    favorite_color = fetch_vms_count_from_lab(intent, session)
-    speech_output = "There are " + favorite_color + \
-                    " in the lab. Goodbye."
+    lab_details = fetch_vms_count_from_lab(intent, session)
+    speech_output = "" + lab_details + " Goodbye."
     should_end_session = True
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
