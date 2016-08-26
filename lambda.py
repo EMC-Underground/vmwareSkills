@@ -125,7 +125,27 @@ def fetch_vms_count_from_lab(intent, session):
     payload = "{'Amount':'Everything'}"
     # Create a new message
     response = queue.send_message(MessageBody=payload, MessageAttributes={"AmazonIntent":{"StringValue":intent['name'],'DataType': 'String'}})
-    return "two vms"
+
+    messages = []
+
+    while len(messages) < 1:
+        messages = sqs.get_queue_by_name(QueueName='lab_comm_2').receive_messages(MessageAttributeNames=['AmazonResponse'])
+
+    for message in messages:
+        print("We got a message")
+        # Get the custom author message attribute if it was set
+        eventType = ""
+        print (message)
+        if message.message_attributes is not None:
+            eventType = message.message_attributes.get('AmazonResponse').get('StringValue')
+            print("The message was from labmunger and the intent is {0}".format(eventType))
+            # event = json.loads(message.body)
+            if eventType == "AllVMsCount":
+               response = message.body
+                # Let the queue know that the message is processed
+        message.delete()
+
+    return response
 
 def output_vms_count(intent, session):
     """ Fetches the total count of vms in a vSphere environment"""
